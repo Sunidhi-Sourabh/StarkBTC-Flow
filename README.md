@@ -23,13 +23,13 @@ The next wave of crypto demands scalable, secure, and transparent flows. StarkBT
 
 ## 🛠 Features
 
-| Flag              | Description                                       |
-| `--btc-swap`      | Simulate BTC → StarkNet swap with fee breakdown   |
-| `--verify-wallet` | Validate wallet ownership using mock/testnet data |
-| `--score`         | Assign trust badge based on swap reliability      |
-| `--report`        | Generate Markdown + HTML report                   |
-| `--mobile`        | Simulate mobile UX flow                           |
-| `--debug`         | Print fallback triggers and error logs            |
+-| Flag              | Description                                       |
+-| `--btc-swap`      | Simulate BTC → StarkNet swap with fee breakdown   |
+-| `--verify-wallet` | Validate wallet ownership using mock/testnet data |
+-| `--score`         | Assign trust badge based on swap reliability      |
+-| `--report`        | Generate Markdown + HTML report                   |
+-| `--mobile`        | Simulate mobile UX flow                           |
+-| `--debug`         | Print fallback triggers and error logs            |
 
 ---
 
@@ -58,8 +58,11 @@ make
 
 ## 📊 Sample Reports
 Explore sample outputs in the folder:
+
 Markdown swap summary
+
 HTML trust badge view
+
 JSON fallback logs
 
 ---
