@@ -23,13 +23,13 @@ The next wave of crypto demands scalable, secure, and transparent flows. StarkBT
 
 ## 🛠 Features
 
--| Flag              | Description                                       |
--| `--btc-swap`      | Simulate BTC → StarkNet swap with fee breakdown   |
--| `--verify-wallet` | Validate wallet ownership using mock/testnet data |
--| `--score`         | Assign trust badge based on swap reliability      |
--| `--report`        | Generate Markdown + HTML report                   |
--| `--mobile`        | Simulate mobile UX flow                           |
--| `--debug`         | Print fallback triggers and error logs            |
+- | Flag              | Description                                       |
+- | `--btc-swap`      | Simulate BTC → StarkNet swap with fee breakdown   |
+- | `--verify-wallet` | Validate wallet ownership using mock/testnet data |
+- | `--score`         | Assign trust badge based on swap reliability      |
+- | `--report`        | Generate Markdown + HTML report                   |
+- | `--mobile`        | Simulate mobile UX flow                           |
+- | `--debug`         | Print fallback triggers and error logs            |
 
 ---
 
@@ -68,10 +68,10 @@ JSON fallback logs
 ---
 
 ## 🧩 Tools Used
-Atomiq – BTC ↔ StarkNet swap logic
-Xverse – Wallet verification and UX flows
-Cairo – Optional contract parsing
-StarkNet – Layer 2 scalability
+- Atomiq – BTC ↔ StarkNet swap logic
+- Xverse – Wallet verification and UX flows
+- Cairo – Optional contract parsing
+- StarkNet – Layer 2 scalability
 
 ---
 
@@ -82,10 +82,10 @@ Runtime: m s | Narrated walkthrough of CLI, swap flow, and report generation
 ---
 
 ## 🧠 Future Roadmap
-SDK for integrating StarkBTC Flow into other dApps
-Mobile UI dashboard with fallback toggles
-ZK audit mode for privacy-first swap verification
-StarkNet-native trust badge contract
+- SDK for integrating StarkBTC Flow into other dApps
+- Mobile UI dashboard with fallback toggles
+- ZK audit mode for privacy-first swap verification
+- StarkNet-native trust badge contract
 
 ---
 
