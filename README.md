@@ -23,7 +23,7 @@ The next wave of crypto demands scalable, secure, and transparent flows. StarkBT
 
 ## 🛠 Features
 
-- | Flag              | Description                                       |
+  | Flag              | Description                                       |
 - | `--btc-swap`      | Simulate BTC → StarkNet swap with fee breakdown   |
 - | `--verify-wallet` | Validate wallet ownership using mock/testnet data |
 - | `--score`         | Assign trust badge based on swap reliability      |
@@ -54,16 +54,16 @@ cd StarkBTC-Flow
 make
 ```
 
+# Run swap simulation
+```./starkbtc --btc-swap --verify-wallet --score --report ```
+
 ---
 
 ## 📊 Sample Reports
 Explore sample outputs in the folder:
-
-Markdown swap summary
-
-HTML trust badge view
-
-JSON fallback logs
+- Markdown swap summary
+- HTML trust badge view
+- JSON fallback logs
 
 ---
 
@@ -98,5 +98,4 @@ Founder-grade clarity meets cinematic execution. Connect on Github[] | Discord[]
 © 2025 Sunidhi Sourabh. This project is licensed under the Apache License 2.0. All trademarks, logos, and third-party tools mentioned belong to their respective owners. This project is intended for educational and hackathon purposes only.
 
 ---
-# Run swap simulation
-```./starkbtc --btc-swap --verify-wallet --score --report
+
