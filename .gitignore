@@ -1,1 +1,37 @@
+# Build artifacts
+/build/
+/*.out
+/*.exe
+*.o
+*.obj
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Python (optional dashboard/report preview)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# Cairo (optional contract parsing)
+*.cairo
+*.json
+artifacts/
+
+# Reports and logs
+/reports/*.html
+/reports/*.md
+/reports/*.json
+*.log
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+
+# Misc
+*.bak
+*.tmp
 
