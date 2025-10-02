@@ -10,12 +10,8 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-// Constants
-const double BTC_AMOUNT = 0.005;
 const double BASE_FEE = 0.0001;
 const double STARKNET_FEE = 0.00005;
-const double TOTAL_FEE = BASE_FEE + STARKNET_FEE;
-const double NET_AMOUNT = BTC_AMOUNT - TOTAL_FEE;
 const double FEE_THRESHOLD = 0.0002;
 const int CONFIRMATIONS_REQUIRED = 3;
 
@@ -29,7 +25,7 @@ void simulateConfirmations() {
 }
 
 // Log fallback to Markdown
-void logFallbackMarkdown() {
+void logFallbackMarkdown(double btcAmount, double totalFee, double netAmount) {
     fs::create_directories("reports");
     std::ofstream md("reports/fallback_log.md");
     if (!md.is_open()) {
@@ -38,10 +34,11 @@ void logFallbackMarkdown() {
     }
 
     md << "# ⚠️ Fallback Trigger Log\n\n";
-    md << "- **BTC Amount:** " << BTC_AMOUNT << " BTC\n";
+    md << "- **BTC Amount:** " << btcAmount << " BTC\n";
     md << "- **Base Fee:** " << BASE_FEE << " BTC\n";
     md << "- **StarkNet Fee:** " << STARKNET_FEE << " BTC\n";
-    md << "- **Total Fee:** " << TOTAL_FEE << " BTC\n";
+    md << "- **Total Fee:** " << totalFee << " BTC\n";
+    md << "- **Net Amount:** " << netAmount << " BTC\n";
     md << "- **Threshold:** " << FEE_THRESHOLD << " BTC\n";
     md << "- **Status:** Fee exceeds threshold. Suggest batching or alternate L2.\n";
 
@@ -50,13 +47,14 @@ void logFallbackMarkdown() {
 }
 
 // Log fallback to JSON
-void logFallbackJSON() {
+void logFallbackJSON(double btcAmount, double totalFee, double netAmount) {
     fs::create_directories("reports");
     json j;
-    j["btc_amount"] = BTC_AMOUNT;
+    j["btc_amount"] = btcAmount;
     j["base_fee"] = BASE_FEE;
     j["starknet_fee"] = STARKNET_FEE;
-    j["total_fee"] = TOTAL_FEE;
+    j["total_fee"] = totalFee;
+    j["net_amount"] = netAmount;
     j["threshold"] = FEE_THRESHOLD;
     j["status"] = "Fee exceeds threshold. Suggest batching or alternate L2.";
 
@@ -72,32 +70,26 @@ void logFallbackJSON() {
 }
 
 // Main swap simulation
-void simulateSwap() {
+void simulateSwap(double btcAmount, bool debugMode) {
+    double totalFee = BASE_FEE + STARKNET_FEE;
+    double netAmount = btcAmount - totalFee;
+
     std::cout << "🔁 Simulating BTC → StarkNet swap...\n";
     std::cout << std::fixed << std::setprecision(8);
-    std::cout << "💰 BTC Sent:           " << BTC_AMOUNT << " BTC\n";
+    std::cout << "💰 BTC Sent:           " << btcAmount << " BTC\n";
     std::cout << "🔸 Base Fee:           " << BASE_FEE << " BTC\n";
     std::cout << "🔸 StarkNet Fee:       " << STARKNET_FEE << " BTC\n";
-    std::cout << "📤 Net Amount:         " << NET_AMOUNT << " BTC\n";
+    std::cout << "📤 Net Amount:         " << netAmount << " BTC\n";
 
     simulateConfirmations();
 
-    if (TOTAL_FEE > FEE_THRESHOLD) {
+    if (totalFee > FEE_THRESHOLD) {
         std::cout << "⚠️  Fallback Triggered: High fee detected.\n";
-        logFallbackMarkdown();
-        logFallbackJSON();
+        if (debugMode) {
+            logFallbackMarkdown(btcAmount, totalFee, netAmount);
+            logFallbackJSON(btcAmount, totalFee, netAmount);
+        }
     } else {
         std::cout << "✅ Swap completed successfully.\n";
     }
 }
-
-// CLI flag handler
-void handleSwapFlag(const std::string& flag) {
-    if (flag == "--simulate-swap") {
-        simulateSwap();
-    } else {
-        std::cerr << "❌ Unknown swap flag: " << flag << "\n";
-        std::cerr << "Usage: --simulate-swap\n";
-    }
-}
-
