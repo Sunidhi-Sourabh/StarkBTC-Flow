@@ -1,78 +1,84 @@
+#include "wallet_verifier.h"
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-// Mock wallet data
-const std::string WALLET_ID = "mock_wallet_123";
-const std::string WALLET_TYPE = "Xverse";
-const bool IS_VERIFIED = true;
-const std::string BADGE = IS_VERIFIED ? "✅ Verified" : "❌ Unverified";
+namespace StarkBTC {
 
-// Markdown log
-void logWalletMarkdown() {
-    fs::create_directories("reports");
-    std::ofstream md("reports/wallet_verification.md");
-    if (!md.is_open()) {
-        std::cerr << "❌ Failed to write wallet Markdown log.\n";
-        return;
+    WalletVerifier::WalletVerifier(const std::string& wallet_address)
+        : wallet_address_(wallet_address), score_threshold_(70) {}
+
+    WalletStatus WalletVerifier::verify() {
+        int score = calculateScore(wallet_address_);
+        bool is_valid = score >= score_threshold_;
+        std::string reason = is_valid ? "" : "Score below threshold";
+
+        WalletStatus status = {is_valid, wallet_address_, reason, score};
+
+        logWalletMarkdown(status);
+        logWalletJSON(status);
+
+        std::cout << "🔍 Verifying wallet ownership...\n";
+        std::cout << "🧠 Wallet ID: " << wallet_address_ << "\n";
+        std::cout << "📊 Score: " << score << "\n";
+        std::cout << "🔐 Status: " << (is_valid ? "✅ Verified" : "❌ Unverified") << "\n";
+
+        return status;
     }
 
-    md << "# 🔐 Wallet Verification Report\n\n";
-    md << "- **Wallet ID:** `" << WALLET_ID << "`\n";
-    md << "- **Wallet Type:** " << WALLET_TYPE << "\n";
-    md << "- **Status:** " << BADGE << "\n";
-    md << "- **Method:** Mock testnet ping\n";
-    md << "- **Notes:** Verification simulated for demo purposes.\n";
-
-    md.close();
-    std::cout << "📝 Wallet verification saved to `reports/wallet_verification.md`\n";
-}
-
-// JSON log
-void logWalletJSON() {
-    fs::create_directories("reports");
-    json j;
-    j["wallet_id"] = WALLET_ID;
-    j["wallet_type"] = WALLET_TYPE;
-    j["verified"] = IS_VERIFIED;
-    j["badge"] = BADGE;
-    j["method"] = "Mock testnet ping";
-    j["notes"] = "Verification simulated for demo purposes";
-
-    std::ofstream jf("reports/wallet_verification.json");
-    if (!jf.is_open()) {
-        std::cerr << "❌ Failed to write wallet JSON log.\n";
-        return;
+    int WalletVerifier::calculateScore(const std::string& wallet_address) {
+        return wallet_address.length() % 100; // Mock scoring logic
     }
 
-    jf << std::setw(4) << j << std::endl;
-    jf.close();
-    std::cout << "🧾 Wallet verification saved to `reports/wallet_verification.json`\n";
-}
-
-// Main verifier
-void verifyWalletOwnership() {
-    std::cout << "🔍 Verifying wallet ownership...\n";
-    std::cout << "🧠 Wallet ID: " << WALLET_ID << "\n";
-    std::cout << "🔗 Wallet Type: " << WALLET_TYPE << "\n";
-    std::cout << "🔐 Status: " << BADGE << "\n";
-
-    logWalletMarkdown();
-    logWalletJSON();
-}
-
-// CLI flag handler
-void handleWalletFlag(const std::string& flag) {
-    if (flag == "--verify-wallet") {
-        verifyWalletOwnership();
-    } else {
-        std::cerr << "❌ Unknown wallet flag: " << flag << "\n";
-        std::cerr << "Usage: --verify-wallet\n";
+    std::string WalletVerifier::generateBadge(int score) {
+        if (score >= 90) return "🏅 Gold";
+        if (score >= 70) return "🥈 Silver";
+        return "🥉 Bronze";
     }
-}
 
+    void WalletVerifier::logWalletMarkdown(const WalletStatus& status) {
+        fs::create_directories("reports");
+        std::ofstream md("reports/wallet_verification.md");
+        if (!md.is_open()) {
+            std::cerr << "❌ Failed to write wallet Markdown log.\n";
+            return;
+        }
+
+        md << "# 🔐 Wallet Verification Report\n\n";
+        md << "- **Wallet ID:** `" << status.address << "`\n";
+        md << "- **Score:** " << status.score << "\n";
+        md << "- **Status:** " << (status.is_valid ? "✅ Verified" : "❌ Unverified") << "\n";
+        md << "- **Badge:** " << generateBadge(status.score) << "\n";
+        md << "- **Method:** Mock testnet ping\n";
+        md << "- **Notes:** Verification simulated for demo purposes.\n";
+
+        md.close();
+        std::cout << "📝 Wallet verification saved to `reports/wallet_verification.md`\n";
+    }
+
+    void WalletVerifier::logWalletJSON(const WalletStatus& status) {
+        fs::create_directories("reports");
+        json j;
+        j["wallet_id"] = status.address;
+        j["score"] = status.score;
+        j["verified"] = status.is_valid;
+        j["badge"] = generateBadge(status.score);
+        j["method"] = "Mock testnet ping";
+        j["notes"] = "Verification simulated for demo purposes";
+
+        std::ofstream jf("reports/wallet_verification.json");
+        if (!jf.is_open()) {
+            std::cerr << "❌ Failed to write wallet JSON log.\n";
+            return;
+        }
+
+        jf << std::setw(4) << j << std::endl;
+        jf.close();
+        std::cout << "🧾 Wallet verification saved to `reports/wallet_verification.json`\n";
+    }
+
+}
