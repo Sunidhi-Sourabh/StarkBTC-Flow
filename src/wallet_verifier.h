@@ -20,6 +20,9 @@ namespace StarkBTC {
         int calculateScore(const std::string& wallet_address);
         std::string generateBadge(int score);
 
+        void logWalletMarkdown(const WalletStatus& status); // ✅ Declare this
+        void logWalletJSON(const WalletStatus& status);     // ✅ Declare this
+
     private:
         std::string wallet_address_;
         int score_threshold_;
@@ -28,4 +31,3 @@ namespace StarkBTC {
 }
 
 #endif // WALLET_VERIFIER_H
-
