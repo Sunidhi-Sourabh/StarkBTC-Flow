@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <ctime>
 #include <cstdlib>
+#include <sstream>
 #include <nlohmann/json.hpp> // Requires JSON library
 
 using json = nlohmann::json;
@@ -20,6 +21,12 @@ namespace StarkBTC {
         char buf[100];
         std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
         return std::string(buf);
+    }
+
+    std::string ReportGenerator::generateBadge(int score) {
+        if (score >= 90) return "🏅 Gold";
+        if (score >= 70) return "🥈 Silver";
+        return "🥉 Bronze";
     }
 
     std::string ReportGenerator::generateMarkdown() {
@@ -66,4 +73,43 @@ namespace StarkBTC {
         return html.str();
     }
 
-    std::string ReportGenerator
+    std::string ReportGenerator::generateJSON() {
+        json j;
+        j["timestamp"] = getTimestamp();
+        j["wallet_id"] = wallet_.address;
+        j["wallet_score"] = wallet_.score;
+        j["badge"] = generateBadge(wallet_.score);
+        j["swap_success"] = swap_.success;
+        j["fee"] = swap_.fee;
+        j["fallback_reason"] = swap_.fallback_reason;
+        j["notes"] = {
+            "Wallet verified via mock testnet",
+            "Report generated for demo purposes"
+        };
+        return j.dump(4);
+    }
+
+    void ReportGenerator::saveToFile(const std::string& content, const std::string& format) {
+        fs::create_directories("reports");
+        std::string path = "reports/swap_report." + format;
+        std::ofstream out(path);
+        if (!out.is_open()) {
+            std::cerr << "❌ Failed to save report: " << path << "\n";
+            return;
+        }
+        out << content;
+        out.close();
+        std::cout << "📄 Report saved to `" << path << "`\n";
+    }
+
+    void ReportGenerator::autoOpenHTML(const std::string& filepath) {
+#ifdef _WIN32
+        system(("start " + filepath).c_str());
+#elif __APPLE__
+        system(("open " + filepath).c_str());
+#else
+        system(("xdg-open " + filepath).c_str());
+#endif
+    }
+
+}
