@@ -10,26 +10,65 @@
 #include "fee_calculator.h"
 #include "report_generator.h"
 
+using namespace StarkBTC;
+
 double btcAmount = 0.005; // Default BTC amount
 bool debugMode = false;   // Debug flag
+std::string walletAddress = "user_wallet_xyz"; // Default wallet
 
 int main(int argc, char* argv[]) {
     std::vector<std::string> flags(argv + 1, argv + argc);
 
+    SwapResult swap;
+    WalletStatus wallet;
+    bool swapDone = false;
+    bool walletChecked = false;
+
     for (const std::string& flag : flags) {
-        if (flag == "--btc-swap") {
-            simulateSwap(btcAmount, debugMode);
+        if (flag == "--btc-swap" || flag == "--simulate-swap") {
+            SwapSimulator simulator(btcAmount, debugMode);
+            swap = simulator.simulate();
+            swapDone = true;
         }
         else if (flag == "--verify-wallet") {
-            verifyWalletOwnership();
+            WalletVerifier verifier(walletAddress);
+            wallet = verifier.verify();
+            walletChecked = true;
         }
         else if (flag == "--score") {
-            calculateFees(btcAmount);
+            FeeCalculator feeCalc(0.0001, 1.5);
+            double fee = feeCalc.calculate(btcAmount);
+            std::cout << "💰 Estimated fee: " << fee << " BTC\n";
+            if (feeCalc.exceedsThreshold(fee, 0.001)) {
+                std::cout << "⚠️ Fee exceeds threshold. Fallback logic may be triggered.\n";
+            }
         }
         else if (flag.rfind("--report-format=", 0) == 0) {
             std::string format = flag.substr(16);
             if (!format.empty()) {
-                generateReportByFormat(format);
+                if (!swapDone) {
+                    SwapSimulator simulator(btcAmount, debugMode);
+                    swap = simulator.simulate();
+                }
+                if (!walletChecked) {
+                    WalletVerifier verifier(walletAddress);
+                    wallet = verifier.verify();
+                }
+
+                ReportGenerator reportGen(swap, wallet);
+                if (format == "md") {
+                    reportGen.saveToFile(reportGen.generateMarkdown(), "md");
+                } else if (format == "html") {
+                    reportGen.saveToFile(reportGen.generateHTML(), "html");
+                } else if (format == "json") {
+                    reportGen.saveToFile(reportGen.generateJSON(), "json");
+                } else if (format == "all") {
+                    reportGen.saveToFile(reportGen.generateMarkdown(), "md");
+                    reportGen.saveToFile(reportGen.generateHTML(), "html");
+                    reportGen.saveToFile(reportGen.generateJSON(), "json");
+                } else {
+                    std::cerr << "❌ Unknown format. Use: md | html | json | all\n";
+                }
             } else {
                 std::cerr << "❌ Missing format. Use: --report-format=md|html|json|all\n";
             }
@@ -41,9 +80,6 @@ int main(int argc, char* argv[]) {
             } catch (...) {
                 std::cerr << "❌ Invalid BTC amount format.\n";
             }
-        }
-        else if (flag == "--simulate-swap") {
-            simulateSwap(btcAmount, debugMode);
         }
         else if (flag == "--open") {
 #ifdef _WIN32
@@ -59,7 +95,7 @@ int main(int argc, char* argv[]) {
             std::cout << "🛠 Debug mode enabled: fallback trace logs will be generated.\n";
         }
         else {
-            std::cerr << "⚠️  Unknown flag: " << flag << "\n";
+            std::cerr << "⚠️ Unknown flag: " << flag << "\n";
         }
     }
 
@@ -81,4 +117,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-
