@@ -14,6 +14,8 @@ namespace StarkBTC {
         std::string generateMarkdown();
         std::string generateHTML();
         std::string generateJSON();
+        std::string generateBadge(int score); // ✅ Added to match .cpp
+
         void saveToFile(const std::string& content, const std::string& format);
         void autoOpenHTML(const std::string& filepath);
 
