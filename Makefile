@@ -14,24 +14,23 @@ all: $(TARGET)
 
 # Link object files
 $(TARGET): $(OBJS)
-    @echo "🔧 Linking $(TARGET)..."
-    $(CC) $(CFLAGS) -o $@ $^
+	@echo "🔧 Linking $(TARGET)..."
+	$(CC) $(CFLAGS) -o $@ $^
 
 # Compile source files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-    @mkdir -p $(OBJ_DIR)
-    @echo "📦 Compiling $<..."
-    $(CC) $(CFLAGS) -c $< -o $@
+	@mkdir -p $(OBJ_DIR)
+	@echo "📦 Compiling $<..."
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean build artifacts
 clean:
-    @echo "🧹 Cleaning build..."
-    rm -rf $(OBJ_DIR) $(TARGET)
+	@echo "🧹 Cleaning build..."
+	rm -rf $(OBJ_DIR) $(TARGET)
 
 # Run CLI
 run: $(TARGET)
-    @echo "🚀 Running StarkBTC Flow..."
-    ./$(TARGET) --btc-swap --verify-wallet --score --report
+	@echo "🚀 Running StarkBTC Flow..."
+	./$(TARGET) --simulate-swap --amount=0.01 --debug --report-format=all --open
 
 .PHONY: all clean run
-
