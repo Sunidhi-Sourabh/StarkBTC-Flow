@@ -20,6 +20,10 @@ namespace StarkBTC {
         double calculateFee(double amount);
         std::string generateReport(const SwapResult& result);
 
+        void simulateConfirmations(); // ✅ Declare this
+        void logFallbackMarkdown(double btcAmount, double fee, double netAmount); // ✅ Declare this
+        void logFallbackJSON(double btcAmount, double fee, double netAmount);     // ✅ Declare this
+
     private:
         double amount_;
         bool debug_mode_;
