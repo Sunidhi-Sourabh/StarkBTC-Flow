@@ -1,0 +1,8 @@
+{
+    "badge": "🥉 Bronze",
+    "method": "Mock testnet ping",
+    "notes": "Verification simulated for demo purposes",
+    "score": 15,
+    "verified": false,
+    "wallet_id": "user_wallet_xyz"
+}
