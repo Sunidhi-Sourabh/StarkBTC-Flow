@@ -39,11 +39,15 @@ The next wave of crypto demands scalable, secure, and transparent flows. StarkBT
 - Makefile-compatible build system (`make`, `cmake`)  
 - Python 3.8+ (for optional dashboard/report preview)  
 - StarkNet CLI or Cairo CLI (optional extensions)  
-- Basic terminal environment (Linux/macOS/WSL recommended)
+- **MSYS2 terminal with MinGW64 shell (Windows)**  
+- Basic terminal environment (Linux/macOS/WSL also supported)
 
 ---
 
 ## 🚀 How to Run
+
+> ⚠️ **Run all commands inside MSYS2 MinGW64 shell on Windows.**  
+> This ensures proper path handling, compiler compatibility, and CLI behavior.
 
 ```bash
 # Clone the repo
