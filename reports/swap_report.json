@@ -1,0 +1,13 @@
+{
+    "badge": "🥉 Bronze",
+    "fallback_reason": "",
+    "fee": 0.00015000000000000001,
+    "notes": [
+        "Wallet verified via mock testnet",
+        "Report generated for demo purposes"
+    ],
+    "swap_success": true,
+    "timestamp": "2025-10-03 21:33:27",
+    "wallet_id": "user_wallet_xyz",
+    "wallet_score": 15
+}
